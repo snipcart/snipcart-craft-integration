@@ -1,0 +1,31 @@
+{% from "_includes/forms" import text -%}
+
+{% includeTranslations
+	"Display in a table",
+	"Display hierarchically",
+	"Display as thumbnails"
+%}
+
+<div class="main">
+	<div class="toolbar">
+		<table>
+			<tr>
+				<td>
+					<div class="texticon search icon">
+						{{ text({
+							placeholder: "Search"|t
+						}) }}
+					</div>
+				</td>
+				<td class="thin viewbtns hidden"></td>
+			</tr>
+		</table>
+		<div class="spinner hidden"></div>
+	</div>
+
+	<div class="elements"></div>
+
+	<div class="centeralign">
+		<div class="spinner loadingmore hidden"></div>
+	</div>
+</div>

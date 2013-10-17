@@ -1,0 +1,40 @@
+{% import "_includes/forms" as forms %}
+
+<form method="post" action="" accept-charset="UTF-8">
+	{% set fromEmail = getHelp is defined ? getHelp.fromEmail : currentUser.email %}
+	{% if fromEmail == "support@pixelandtonic.com" %}
+		{% set fromEmail = "" %}
+	{% endif %}
+
+	{{ forms.textField({
+		label: "From Email"|t,
+		name: 'fromEmail',
+		value: fromEmail,
+		class: 'fromEmail',
+		errors: getHelp is defined ? getHelp.getErrors('fromEmail') : '',
+		required: true,
+	}) }}
+
+	{{ forms.textarea({
+		label: "Message"|t,
+		name: 'message',
+		class: 'message nicetext',
+		rows: 10,
+		value: message
+	}) }}
+
+	{{ forms.checkbox({
+		name: 'attachDebugFiles',
+		checked: true,
+		class: 'attachDebugFiles',
+		label: "Include error logs and database backup"|t,
+	}) }}
+
+	<div class="buttons last">
+		<input type="submit" class="btn submit" value="{{ 'Send'|t }}">
+		<div class="spinner hidden"></div>
+	</div>
+
+	{% set email %}<a href="mailto:support@buildwithcraft.com">support@buildwithcraft.com</a>{% endset %}
+	<p class="error hidden">{{ "Couldn’t send your message. Please email it to {email} instead."|t({ email: email })|raw }}</p>
+</form>

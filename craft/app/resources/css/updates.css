@@ -1,0 +1,20 @@
+@charset "UTF-8";
+#loading { margin-top: 210px !important; text-align: center; }
+
+#content h2.heading { float: left; margin: 0; padding: 6px 0; }
+
+#content .buttons { float: right; margin: 0; }
+
+#content hr { clear: both; margin: 30px -30px; }
+
+#content .critical { margin-left: 5px; border-radius: 2px; padding: 2px 5px; font-weight: normal; color: #fff; background: #d6301a; }
+
+#content ul li { padding: 3px 0 3px 25px; }
+
+#content ul li:before { font-family: 'Craft'; speak: none; -webkit-font-feature-settings: "liga", "dlig"; -moz-font-feature-settings: "liga=1, dlig=1"; -moz-font-feature-settings: "liga", "dlig"; -ms-font-feature-settings: "liga", "dlig"; -o-font-feature-settings: "liga", "dlig"; font-feature-settings: "liga", "dlig"; text-rendering: optimizeLegibility; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: subpixel-antialiased; display: inline-block; text-align: center; font-style: normal; vertical-align: middle; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; float: left; margin: 1px 0 1px -23px; font-size: 16px; }
+
+#content ul li.added:before { content: 'wand'; color: #5286d9; }
+
+#content ul li.improved:before { content: 'brush'; }
+
+#content ul li.fixed:before { content: 'screwdriver'; color: #da5a47; }

@@ -1,0 +1,24 @@
+{% extends "_layout" %}
+{% set title = "Store" %}
+
+{% block content %}
+	<h1>Store</h1>
+
+	{% for entry in craft.entries.section('store').find() %}
+		<article>
+			<h3>
+				{{ entry.title }}
+			</h3>
+
+			<a href="#"
+			   class="snipcart-add-item"
+			   data-item-price="{{ entry.price }}"
+			   data-item-id="{{ entry.slug }}"
+			   data-item-name="{{ entry.title }}"
+			   data-item-description="{{ entry.description }}"
+			   data-item-url="{{ url('store') }}">
+			   Buy it
+			</a>
+		</article>
+	{% endfor %}
+{% endblock %}

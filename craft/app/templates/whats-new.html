@@ -1,0 +1,37 @@
+{% extends "_layouts/cp" %}
+{% set title = "What’s new in Craft 1.2" %}
+{% includeCssResource "css/whats-new.css" %}
+
+{% set content %}
+	<h1>Welcome to Craft 1.2. Here’s what’s new.</h1>
+
+	<div class="feature singles">
+		<h2>Singles</h2>
+		<p>You can now create Single sections for one-off pages like your Homepage. Each Single gets its own URL and field layout, and they show up in the Entries tab right alongside your other sections’ content. Best of all, Live Preview works with them.</p>
+	</div>
+
+	<div class="feature structures">
+		<h2>Structures</h2>
+		<p>You can now create Structure sections for times when you need to store entries in a particular order, or you want to store hierarchical content. Structure sections give you full control over how deep the hierarchy can go, as well as what the nested entries’ URLs should look like.</p>
+	</div>
+
+	<div class="feature entrytypes">
+		<h2>Entry Types</h2>
+		<p>Channel and Structure sections can now have more than one field layout, enabling even more flexible content structures, if your site requires it.</p>
+	</div>
+{% endset %}
+
+
+{% set js %}
+	if (typeof Storage !== 'undefined')
+	{
+		for (var key in localStorage)
+		{
+			if (key.substr(0, 5) == 'Craft')
+			{
+				delete localStorage[key];
+			}
+		}
+	}
+{% endset %}
+{% includeJs js %}

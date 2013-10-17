@@ -1,0 +1,212 @@
+{% extends "_layouts/basecp" %}
+
+{% includeCssResource "css/cp.css" first %}
+{%- includeTranslations
+	"1 update available",
+	"{num} updates available",
+	"More",
+	"Attempted to get the height of a modal whose container has not been set.",
+	"Attempted to get the width of a modal whose container has not been set.",
+	"Attempted to position a modal whose container has not been set.",
+	"Attempted to position a modal whose container has not been set.",
+	"Are you sure you want to transfer your license to this domain?",
+	"License transferred.",
+	"Save",
+	"Cancel",
+	"Remove",
+	"Delete",
+	"Show",
+	"Hide",
+	"Close",
+	"Done",
+	"Reorder",
+	"An unknown error occurred.",
+	"New order saved.",
+	"Couldn’t save new order.",
+	"Are you sure you want to delete “{name}”?",
+	"“{name}” deleted.",
+	"Couldn’t delete “{name}”.",
+	"Upload failed for {filename}",
+	"View file",
+	"Edit properties",
+	"Rename file",
+	"Copy reference tag",
+	"Delete file",
+	"{ctrl}C to copy.",
+	"Are you sure you want to delete these {number} files?",
+	"New subfolder",
+	"Rename folder",
+	"Delete folder",
+	"Enter the name of the folder",
+	"Really delete folder “{folder}”?"
+-%}
+
+{% if sidebar is not defined %}
+	{% set sidebar = block('sidebar')|trim %}
+{% endif %}
+{% set hasSidebar = (sidebar is not empty) %}
+
+{% set hasHelp = (docsUrl is defined and docsUrl is not empty) %}
+
+
+{% set body %}
+	{% if currentUser.admin and craft.config.devMode %}
+		<div id="devmode" title="{{ 'Craft is running in Dev Mode.'|t }}"></div>
+	{% endif %}
+
+	{% if craft.cp.areAlertsCached() %}
+		{% set alerts = craft.cp.getAlerts() %}
+		{% if alerts %}
+			<ul id="alerts">
+				{% for alert in craft.cp.getAlerts() %}
+					<li>{{ alert|raw }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% else %}
+		{% includeJs 'Craft.cp.fetchAlerts();' %}
+	{% endif %}
+
+	<header id="header">
+		<div class="centered">
+			<ul id="header-actions" class="right">
+				{% if currentUser.can('performUpdates') %}
+					{% if craft.app.isUpdateInfoCached() %}
+						{% set totalUpdates = craft.app.getTotalAvailableUpdates() %}
+						{% if totalUpdates %}
+							{% if totalUpdates == 1 %}
+								{% set updateText = "1 update available"|t %}
+							{% else %}
+								{% set updateText = "{num} updates available"|t({ num: totalUpdates }) %}
+							{% endif %}
+							<li class="updates{% if craft.app.isCriticalUpdateAvailable() %} critical{% endif %}">
+								<a data-icon="newstamp" href="{{ url('updates') }}" title="{{ updateText }}">
+									<span>{{ totalUpdates }}</span>
+								</a>
+							</li>
+						{% endif %}
+					{% else %}
+						{% includeJs 'Craft.cp.checkForUpdates();' %}
+					{% endif %}
+				{% endif %}
+
+				{% if currentUser.admin %}
+					<li>
+						<a class="settings" data-icon="settings" href="{{ url('settings') }}" title="{{ 'Settings'|t }}"></a>
+					</li>
+				{% endif %}
+
+				<li>
+					<a data-icon="user" class="myaccount menubtn" title="{{ 'My Account'|t }}" role="button"></a>
+					<div class="menu" data-align="right">
+						<ul>
+							<li><a href="{{ url('myaccount') }}">{{ "My Account"|t }}</a></li>
+							<li><a href="{{ logoutUrl }}">{{ "Sign out"|t }}</a></li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+
+			<h2><a href="{{ siteUrl }}" title="{{ 'Site Homepage'|t }}" target="_blank">{{ siteName }}</a></h2>
+
+			<nav>
+				<ul id="nav">
+					{% set firstSeg = craft.request.segment(1) %}
+					{% if firstSeg == 'myaccount' %}{% set firstSeg = 'users' %}{% endif %}
+					{% for handle, item in craft.cp.nav %}
+						<li id="nav-{{ handle }}">
+							<a class="{% if item.hasIcon is defined and item.hasIcon %}hasicon{% endif %} {% if firstSeg == handle %}sel{% endif %}" href="{{ url(handle) }}">
+								{{- item.name -}}
+								{%- if item.badge is defined and item.badge -%}
+									<span class="badge">{{ item.badge }}</span>
+								{%- endif -%}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="centered">
+		<div id="notifications-wrapper">
+			<div id="notifications">
+				{% for type, message in craft.session.flashes %}
+					<div class="notification {{ type }}">{{ message }}</div>
+				{% endfor %}
+			</div>
+		</div>
+
+		<header id="page-header">
+
+			{% if crumbs is defined and crumbs %}
+				<nav id="crumbs">
+					<ul>
+						{% for crumb in crumbs %}
+							<li><a href="{{ crumb.url }}">{{ crumb.label }}</a></li>
+						{% endfor %}
+					</ul>
+				</nav>
+			{% endif %}
+
+			{% if title is defined and title %}
+				<h1>{{ title|raw }}</h1>
+			{% endif %}
+
+			{% if extraPageHeaderHtml is defined %}
+				<div id="extra-headers">
+					{{ extraPageHeaderHtml }}
+				</div>
+			{% endif %}
+
+			<div class="clear"></div>
+
+			{% if tabs is defined and tabs %}
+				<nav id="tabs" class="tabs">
+					<ul>
+						{% for tabId, tab in tabs %}
+							{% if tab %}
+								{% set tabIsSelected = ((selectedTab is not defined and loop.first) or (selectedTab is defined and selectedTab == tabId)) -%}
+
+								{% if tabIsSelected and title != tab.label %}
+									{% set title = title~' - '~tab.label %}
+								{% endif -%}
+
+								<li><a id="tab-{{ tabId }}" class="tab{% if tabIsSelected %} sel{% endif %}{% if tab.class is defined %} {{ tab.class }}{% endif %}" href="{{ tab.url }}">{{ tab.label }}</a></li>
+							{% endif %}
+						{% endfor %}
+					</ul>
+				</nav>
+			{% endif %}
+		</header>
+	</div>
+
+	<div id="main" class="centered {% if hasSidebar %}has-sidebar{% endif %} {% if hasHelp %}has-help{% endif %}">
+		{% if hasSidebar %}
+			<div id="sidebar" class="sidebar">
+				{{ sidebar|raw }}
+			</div>
+		{% endif %}
+
+		<main id="content" role="main">
+			{% block content %}
+				{% if content is defined %}
+					{{ content }}
+				{% endif %}
+			{% endblock %}
+
+			{% if hasHelp %}
+				<a id="help" class="help" title="{{ 'Help'|t }}" href="{{ docsUrl }}" target="_blank"></a>
+			{% endif %}
+		</main>
+	</div>
+
+	<ul id="footer">
+		<li>Craft {{ craft.app.version }}.{{ craft.app.build }}</li>
+		<li>{{ "Released on"|t }} {{ craft.app.releaseDate.localeDate }}</li>
+		{% if currentUser.can('performUpdates') %}
+			<li><a id="footer-updates" href="{{ url('updates') }}">{{ craft.app.isUpdateInfoCached() and totalUpdates ? updateText : "Check for updates"|t }}</a></li>
+		{% endif %}
+		<li>{{ "Copyright"|t }} {{ now.year}} Pixel &amp; Tonic, Inc. {{ "All rights reserved."|t }}</li>
+	</ul>
+{% endset %}

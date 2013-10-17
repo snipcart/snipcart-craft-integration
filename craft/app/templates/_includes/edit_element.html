@@ -1,0 +1,31 @@
+{% from "_includes/forms" import textField %}
+
+<div class="element-hud-form">
+	<form id="element-fields">
+		<input type="hidden" name="elementId" value="{{ element.id }}">
+		<div>
+			{% if hasTitle %}
+				{{ textField({
+					label: "Title"|t,
+					id: 'title',
+					name: 'title',
+					value: element.title,
+					errors: element.getErrors('title'),
+					first: true,
+					autofocus: true,
+					required: true
+				}) }}
+			{% endif %}
+
+			{% include "_includes/fields" with {
+				fields: fieldLayout.getFields(),
+				element: element
+			} only %}
+		</div>
+		<div class="buttons rightalign">
+			<div class="btn cancel">{{ 'Cancel'|t }}</div>
+			<input type="submit" class="submit btn" value="{{ 'Save'|t }}" />
+			<div class="spinner hidden"></div>
+		</div>
+	</form>
+</div>
